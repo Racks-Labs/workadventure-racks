@@ -10,10 +10,10 @@
 
 1. **Este fork es WorkAdventure upstream sin una sola personalización de Racks.** No hay código de Racks: todo está por hacer.
 2. **Sí tiene SSO**, por OpenID Connect estándar (Authorization Code + PKCE). **Logto, que ya usáis en `auth.racks.academy`, sirve como proveedor** sin tocar el código de WorkAdventure.
-3. **Ojo con la licencia: AGPLv3 + Commons Clause.** Esa cláusula prohíbe *vender* un servicio que consista "entera o sustancialmente" en WorkAdventure. Si el campus va dentro de un plan de pago, **hablad antes con WorkAdventure** (hello@workadventu.re) para pedir la licencia *Enterprise*. Es el único coste que no se puede autoalojar.
+3. **Licencia: AGPLv3 + Commons Clause.** La cláusula prohíbe *vender* un servicio que consista "entera o sustancialmente" en WorkAdventure. **Decisión de Racks:** el campus es comunicación interna de la comunidad de alumnos y no se cobra por él, así que el uso propio no necesita licencia comercial. Si algún día se ofrece a terceros, cada tercero compra su licencia *Enterprise* directamente a WorkAdventure. Lo que sí obliga siempre la AGPL: publicar el código fuente de las modificaciones que vean los usuarios (ver Fase 0).
 4. **Para instalarlo necesitas 1 servidor para WorkAdventure, más LiveKit y Coturn** (idealmente en otra máquina con buen ancho de banda), con HTTPS y DNS.
 5. **Lo que podéis autoalojar:** WorkAdventure, LiveKit, Coturn, Redis, Logto (ya lo tenéis), S3 (RustFS/MinIO) y Matrix.
-6. **Lo que se paga fuera:** los servidores y el tráfico, el dominio, la licencia comercial si aplica y, si queréis, LiveKit Cloud en vez de operar el vídeo vosotros.
+6. **Lo que se paga fuera:** los servidores y el tráfico, el dominio, y, si queréis, LiveKit Cloud en vez de operar el vídeo vosotros.
 7. **Fase 1 (MVP) no necesita ni una línea de código en `academy-routes`.** Se crea una app en Logto, se despliega con `DISABLE_ANONYMOUS=true` y el enlace va en el `meetingUrl` de un directo, que ya filtra por plan.
 8. **Para que los planes y matrículas de Racks decidan quién entra en qué sala** hay que implementar la **Admin API** de WorkAdventure: un puente con 4 o 5 endpoints. Ya hay una plantilla casi exacta en `academy-routes` (`/api/internal/v1/users/{sub}/chat-permissions`).
 9. **Para conectar progreso y campus** (abrir una puerta al completar un módulo, por ejemplo) se usan los **webhooks de salida** que ya tiene Racks, más la **Room API gRPC** de WorkAdventure.
@@ -186,12 +186,17 @@ En [`racks/env.racks.example`](./env.racks.example) tenéis las variables concre
                 Neon Postgres                                         LiveKit + Coturn
 ```
 
-### Fase 0: Licencia (antes de invertir más)
+### Fase 0: Licencia (decidido)
 
-- Escribir a hello@workadventu.re explicando el caso: un campus para alumnos dentro de planes de pago de Racks University.
-- Pedir precio de la licencia *Enterprise*, o confirmación por escrito de que el uso educativo interno no es "vender el software".
-- **Es una decisión legal, no técnica. Que la revise vuestro asesor.**
-- Mientras tanto, se puede hacer un piloto interno sin cobrar por el acceso al campus.
+**Decisión:** uso interno para la comunidad de alumnos, sin cobrar por el campus. Si se ofrece a terceros, cada uno compra su licencia *Enterprise* a WorkAdventure (TheCodingMachine).
+
+Reglas para que esto siga siendo cierto:
+
+- **No vender el campus como producto.** Nada de un plan "acceso al campus virtual" ni de un producto de la tienda que sea solo el campus. Lo seguro es que el campus sea una herramienta de comunicación incluida, no lo que se paga.
+- **Terceros:** la licencia la contrata el tercero directamente con WorkAdventure. Racks no puede revender ni sublicenciar WorkAdventure. Si Racks le aloja y opera la instancia a cambio de dinero, eso también es "Sell": entonces la licencia tiene que cubrir ese uso.
+- **AGPL (aplica aunque no se venda nada).** Los alumnos usan el software por red, así que tienen derecho al código fuente de *vuestra* versión, modificaciones incluidas. Basta con mantener este fork accesible (público, o con un enlace al código desde el campus). Las personalizaciones del puente que vivan en `academy-routes` **no** son WorkAdventure y no quedan afectadas, porque se hablan por HTTP.
+- **Conservar** los avisos de licencia y la nota de la Commons Clause en el fork.
+- Opcional pero recomendable: un correo a hello@workadventu.re contando el uso, para tenerlo por escrito.
 
 ### Fase 1: MVP con SSO, sin código en `academy-routes` (1–2 semanas)
 
@@ -270,15 +275,15 @@ Hay que construir un "puente" que implemente la Admin API de WorkAdventure. La e
 | Sentry / PostHog | ✅ / SaaS con plan gratuito | Opcional | 0 € con los planes gratuitos |
 | Dominio + DNS | — | Cloudflare (gratis) sobre `racks.university` | 0 € |
 | Certificados TLS | — | Let's Encrypt automático | 0 € |
-| **Licencia Enterprise de WorkAdventure** | ❌ | **Pedir presupuesto** si el campus se vende dentro de un plan (Commons Clause) | Bajo presupuesto |
+| **Licencia Enterprise de WorkAdventure** | ❌ | **No hace falta** para el uso interno con alumnos. La paga cada tercero si se le ofrece | 0 € para Racks |
 | WorkAdventure SaaS (alternativa a todo lo anterior) | — | Considerarlo si no tenéis a alguien para mantener servidores: hay releases **cada mes** | Por usuario/mes; mirad workadventu.re/pricing |
 
-**Coste total estimado autoalojado para un piloto de hasta unos 200 alumnos concurrentes:** **~30–60 €/mes de infraestructura**, más la licencia si aplica, más **tiempo de mantenimiento** (actualizaciones mensuales; ver `UPGRADE.md`).
+**Coste total estimado autoalojado para un piloto de hasta unos 200 alumnos concurrentes:** **~30–60 €/mes de infraestructura**, más **tiempo de mantenimiento** (actualizaciones mensuales; ver `UPGRADE.md`).
 
 **Mi recomendación para mantener costes bajos y control:**
 
 - **Autoalojar** WorkAdventure, LiveKit y Coturn, y reutilizar Logto.
-- **Pagar** solo los servidores y, si es necesaria, la licencia.
+- **Pagar** solo los servidores.
 - **No pagar** LiveKit Cloud ni el SaaS de WorkAdventure, salvo que no haya nadie para operar la infraestructura.
 
 ---
@@ -287,7 +292,7 @@ Hay que construir un "puente" que implemente la Admin API de WorkAdventure. La e
 
 **Infraestructura y despliegue**
 
-- [ ] Fase 0: correo a WorkAdventure sobre la licencia y revisión legal.
+- [ ] Fase 0: dejar el fork accesible (AGPL) y, si se quiere, correo informativo a WorkAdventure.
 - [ ] Decidir dominios (`campus.`, `livekit.`, `turn.` en `racks.university`).
 - [ ] Contratar 2 VPS: WorkAdventure, y LiveKit + Coturn.
 - [ ] Instalar LiveKit + Coturn (docs oficiales de LiveKit) y abrir los puertos UDP.
