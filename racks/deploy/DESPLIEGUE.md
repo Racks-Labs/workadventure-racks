@@ -65,7 +65,7 @@ V=v1.34.1
 curl -fsSLo docker-compose.yaml https://raw.githubusercontent.com/workadventure/workadventure/$V/contrib/docker/docker-compose.prod.yaml
 curl -fsSLo .env               https://raw.githubusercontent.com/workadventure/workadventure/$V/contrib/docker/.env.prod.template
 # Override de Racks: añade variables que el compose oficial no pasa
-curl -fsSLo docker-compose.override.yaml https://raw.githubusercontent.com/Racks-Labs/workadventure-racks/docs/plan-incorporacion-racks-university/racks/deploy/campus/docker-compose.override.yaml
+curl -fsSLo docker-compose.override.yaml https://raw.githubusercontent.com/Racks-Labs/workadventure-racks/docs/plan-incorporacion-racks-university/racks/deploy/campus/docker-compose.racks.yaml
 nano .env
 ```
 

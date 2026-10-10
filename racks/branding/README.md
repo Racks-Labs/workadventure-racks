@@ -30,7 +30,7 @@ El puente de la academia (`/api/map`, en `academy-routes/src/lib/campus/`) puede
 
 ## B. Sin Admin API: sustituir ficheros en el contenedor
 
-`play` sirve `/static/images/…` desde su carpeta `dist/public`. Se pueden tapar algunos ficheros con volúmenes en `docker-compose.override.yaml`:
+`play` sirve `/static/images/…` desde su carpeta `dist/public`. Se pueden tapar algunos ficheros con volúmenes en el `docker-compose.override.yaml` del servidor (en el repo, `deploy/campus/docker-compose.racks.yaml`):
 
 ```yaml
 services:

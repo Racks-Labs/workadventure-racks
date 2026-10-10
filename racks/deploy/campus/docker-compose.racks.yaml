@@ -1,0 +1,24 @@
+# Overrides de Racks sobre el docker-compose.yaml oficial de producción.
+# En el servidor se guarda como docker-compose.override.yaml (docker compose lo aplica solo).
+# En el repo se llama distinto porque el .gitignore de WorkAdventure ignora ese nombre.
+# Añade variables que el compose oficial de producción NO pasa a los contenedores.
+services:
+  play:
+    environment:
+      - OPENID_TAGS_CLAIM
+      # El compose oficial FIJA OPENID_PROMPT=login, que obliga a teclear la
+      # contraseña aunque el alumno ya tenga sesión en Logto desde learn. Vacío =
+      # SSO real: entra con un clic. (El logout de WorkAdventure no cierra la
+      # sesión de Logto, pero esa sesión es la misma que la de learn.)
+      - OPENID_PROMPT=
+      # Solo cuentan SIN Admin API (con el puente las decide /api/map de la academia).
+      - CONTACT_URL
+      - ENABLE_SAY
+      - ENABLE_ISSUE_REPORT
+      - SKIP_CAMERA_PAGE
+      - DEFAULT_CAMERA_PRIVACY_SETTINGS
+      - DEFAULT_MICROPHONE_PRIVACY_SETTINGS
+  back:
+    environment:
+      - ENABLE_TELEMETRY
+      - SECURITY_EMAIL

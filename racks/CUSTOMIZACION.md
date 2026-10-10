@@ -98,7 +98,7 @@ Ver [`campus-map/README.md`](campus-map/README.md).
 
 | Ajuste | Valor |
 |---|---|
-| Telemetría a WorkAdventure | `ENABLE_TELEMETRY=false` (llega gracias al override) |
+| Telemetría a WorkAdventure | `ENABLE_TELEMETRY=false` (llega gracias a `deploy/campus/docker-compose.racks.yaml`) |
 | Errores a Sentry | `SENTRY_DSN_*` (opcional; plan gratuito) |
 | Analítica PostHog | `POSTHOG_*` (opcional; autoalojable) |
 | Métricas Prometheus | `PROMETHEUS_AUTHORIZATION_TOKEN` (opcional) |
