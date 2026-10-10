@@ -343,3 +343,64 @@ Hay que construir un "puente" que implemente la Admin API de WorkAdventure. La e
 - Embebidos: `src/lib/embed-urls.ts`, `src/components/shared/GatedPartnerEmbed.tsx` y `next.config.ts`.
 - Directos: `src/lib/queries/live-public.ts`.
 - Webhooks: `src/lib/webhooks/AGENTS.md`.
+
+---
+
+## 8. Despliegue en DigitalOcean (todo Docker)
+
+Para ~50 alumnos activos (1 clase diaria de 2 h en vídeo + burbujas informales ≈ 2,5–3 TB/mes de salida):
+
+| Droplet | Contenido | $/mes aprox. |
+|---|---|---|
+| Basic 4 vCPU / 8 GB | `docker compose` de producción: Traefik, play, back, map-storage, uploader, icon, Redis | ~48 |
+| Basic 4 vCPU / 8 GB, o CPU-Optimized | LiveKit + Coturn (contenedores con `network_mode: host`) | ~48–84 |
+| Backups (+20 %) y Spaces (si se graba) | — | ~15–25 |
+| **Total** | Tráfico cubierto por el saldo común de la cuenta (overage ~0,01 $/GB) | **~110–155** |
+
+- **Abrir en el Cloud Firewall del droplet de LiveKit:** 7880–7881 TCP, 50000–60000 UDP, 3478 UDP/TCP y 5349 TCP (Coturn).
+- **AWS EC2** sale ~450–550 $/mes con el mismo uso, por el tráfico a ~0,09 $/GB.
+- **Los precios son de 2026, sacados de webs de comparativas.** Confirmadlos en la calculadora oficial antes de contratar.
+
+## 9. Grado de personalización
+
+Hay tres niveles, de menos a más esfuerzo.
+
+### Nivel 1: sin tocar código (configuración y contenido)
+
+| Qué | Cómo | Dónde |
+|---|---|---|
+| **Avatares (Wokas) propios** | Sprites PNG de **96×128 px**: 3 fotogramas × 4 direcciones de 32×32, formato Pipoya. Hay dos tipos: el Woka completo, o por capas (`body`, `eyes`, `hair`, `clothes`, `hat`, `accessory`). Se listan en un JSON | `play/src/pusher/data/woka.json` y `companions.json`. En Docker se monta un volumen encima o se construye la imagen propia |
+| **Mapas / salas** | Editor integrado en el navegador (mapas `.wam`), o Tiled para diseño a medida con tilesets propios (32×32) | `docs/map-building/` |
+| **Zonas con comportamiento** | Áreas de reunión (LiveKit), restringidas por tag, con aforo máximo, megáfono para dar una clase a toda la sala, silencio, zona personal (despacho), abrir web o fichero, sonido, entrada/salida, zona de chat | `docs/map-building/inline-editor/area-editor/*` |
+| **Objetos / mobiliario propio** | *Entity collections*: un JSON con las imágenes del mobiliario, que se pueden colocar con el editor | `entity-collection-file-format.md`, `ENTITY_COLLECTION_URLS` |
+| **Webs embebidas en salas** | Abrir `learn.racks.university`, un vídeo o una pizarra (Excalidraw/tldraw) al pisar una zona | Áreas "open link" y `EMBEDDED_DOMAINS_WHITELIST` |
+| **Idioma** | La UI ya trae `es-ES` | `play/src/i18n/es-ES` |
+| **Límites** | Personas por burbuja (`MAX_PER_GROUP`), vídeos visibles (`MAX_DISPLAYED_VIDEOS`), editor de mapas solo para algunos (`MAP_EDITOR_ALLOWED_USERS`), anónimos fuera (`DISABLE_ANONYMOUS`) | `.env` |
+
+### Nivel 2: con scripts de mapa y Admin API (código propio, sin forkear WorkAdventure)
+
+- **Scripting API (`WA.*`):** se programa la lógica de las salas en TypeScript, sin modificar WorkAdventure. Ver `docs/developer/map-scripting/`. Por ejemplo:
+  - puertas que se abren según el tag o el progreso
+  - NPCs o carteles con mensajes
+  - quizzes dentro del mapa
+  - variables compartidas
+  - botones en la barra de acciones
+  - popups
+  - mover la cámara
+  - teletransporte
+- **Admin API (fase 2):**
+  - **Marca:** logos de carga, de login y de error (`loadingLogo`, `loginSceneLogo`, `errorSceneLogo`), colores primario y de fondo de las pantallas de configuración, favicon, título y metatags, y enlaces legales. Se puede **ocultar el "Powered by"** (`showPoweredBy`).
+  - **Avatares por mundo** (`api/woka/list`). Por ejemplo, avatares exclusivos por plan o canjeables en la tienda de RacksCoins.
+  - Permisos y tags por alumno.
+
+### Nivel 3: forkear el código (máxima libertad, más mantenimiento)
+
+- Todo es Svelte + Phaser + TypeScript: se puede cambiar la UI, los colores de todo el interfaz, menús, flujos y funciones nuevas.
+- **El coste:** WorkAdventure saca una versión al mes. Cada cambio en el core hay que rebasarlo en cada actualización, y por AGPL el código modificado tiene que estar disponible para los usuarios.
+- **Recomendación:** quedarse en los niveles 1 y 2 y forkear solo si algo no se puede hacer de otra forma. Si hay que hacerlo, mantener los cambios pequeños y aislados.
+
+### Lo que NO se puede (o no merece la pena)
+
+- **Pasar a 3D o a un estilo que no sea pixel-art con rejilla de 32×32:** el motor es Phaser 2D con tiles.
+- **Avatares tipo Ready Player Me o con animaciones complejas:** solo hay sprites de 4 direcciones.
+- **Personalizar la marca sin Admin API:** habría que tocar código o assets de la imagen.
