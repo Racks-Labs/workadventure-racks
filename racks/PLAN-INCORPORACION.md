@@ -379,6 +379,8 @@ Para ~50 alumnos activos (1 clase diaria de 2 h en vídeo + burbujas informales 
 
 ## 9. Grado de personalización
 
+> Catálogo completo y actualizado, con el estado de cada ajuste: [`CUSTOMIZACION.md`](./CUSTOMIZACION.md). Kits: [`campus-map/`](./campus-map/) (plano y script) y [`branding/`](./branding/).
+
 Hay tres niveles, de menos a más esfuerzo.
 
 ### Nivel 1: sin tocar código (configuración y contenido)
