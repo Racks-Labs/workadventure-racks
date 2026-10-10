@@ -348,6 +348,8 @@ Hay que construir un "puente" que implemente la Admin API de WorkAdventure. La e
 
 ## 8. Despliegue en DigitalOcean (todo Docker)
 
+> Comparativa completa de proveedores (IONOS, Hetzner, DigitalOcean, AWS) con Dokploy: [`COMPARATIVA-HOSTING.md`](./COMPARATIVA-HOSTING.md).
+
 Para ~50 alumnos activos (1 clase diaria de 2 h en vídeo + burbujas informales ≈ 2,5–3 TB/mes de salida):
 
 | Droplet | Contenido | $/mes aprox. |
