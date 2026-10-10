@@ -1,0 +1,76 @@
+# Override de DESARROLLO: sustituye el OIDC de pruebas por un Logto local
+# (el mismo producto que auth.racks.academy), servido por el Traefik de WorkAdventure.
+#
+# Uso (desde la raíz del repo):
+#   docker compose -f docker-compose.yaml -f docker-compose.livekit.yaml \
+#     -f docker-compose.no-synapse.yaml -f racks/docker-compose.racks-logto.yaml up
+#
+# Requiere en .env: RACKS_LOGTO_CLIENT_ID y RACKS_LOGTO_CLIENT_SECRET (los da la consola
+# de Logto al crear la app; ver racks/PRUEBA-LOCAL.md, paso 4).
+# Se usa junto a docker-compose.no-synapse.yaml: Synapse está configurado contra el OIDC
+# de pruebas y no sabe hablar con este Logto.
+
+services:
+  logto-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: logto
+      POSTGRES_PASSWORD: logto
+      POSTGRES_DB: logto
+    volumes:
+      - logto-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U logto"]
+      interval: 5s
+      retries: 10
+
+  logto:
+    image: svhd/logto:1.43.0
+    entrypoint: ["sh", "-c", "npm run cli db seed -- --swe && npm start"]
+    environment:
+      DB_URL: postgresql://logto:logto@logto-db:5432/logto
+      ENDPOINT: http://logto.workadventure.localhost
+      ADMIN_ENDPOINT: http://logto-admin.workadventure.localhost
+      TRUST_PROXY_HEADER: "1"
+    depends_on:
+      logto-db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.logto.rule=Host(`logto.workadventure.localhost`)"
+      - "traefik.http.routers.logto.entryPoints=web"
+      - "traefik.http.routers.logto.service=logto"
+      - "traefik.http.services.logto.loadbalancer.server.port=3001"
+      - "traefik.http.routers.logto-admin.rule=Host(`logto-admin.workadventure.localhost`)"
+      - "traefik.http.routers.logto-admin.entryPoints=web"
+      - "traefik.http.routers.logto-admin.service=logto-admin"
+      - "traefik.http.services.logto-admin.loadbalancer.server.port=3002"
+
+  # Para que "play" llegue a Logto por la MISMA URL que el navegador (el issuer tiene que coincidir).
+  reverse-proxy:
+    networks:
+      default:
+        aliases:
+          - "logto.workadventure.localhost"
+          - "logto-admin.workadventure.localhost"
+
+  play:
+    environment:
+      OPENID_CLIENT_ID: ${RACKS_LOGTO_CLIENT_ID}
+      OPENID_CLIENT_SECRET: ${RACKS_LOGTO_CLIENT_SECRET}
+      OPENID_CLIENT_ISSUER: http://logto.workadventure.localhost/oidc
+      OPENID_SCOPE: openid email profile roles
+      OPENID_USERNAME_CLAIM: name
+      OPENID_TAGS_CLAIM: roles
+      DISABLE_ANONYMOUS: "true"
+
+  back:
+    environment:
+      ENABLE_TELEMETRY: "false"
+
+  oidc-server-mock:
+    deploy:
+      replicas: 0
+
+volumes:
+  logto-db-data:
