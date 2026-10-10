@@ -361,6 +361,20 @@ Para ~50 alumnos activos (1 clase diaria de 2 h en vídeo + burbujas informales 
 - **AWS EC2** sale ~450–550 $/mes con el mismo uso, por el tráfico a ~0,09 $/GB.
 - **Los precios son de 2026, sacados de webs de comparativas.** Confirmadlos en la calculadora oficial antes de contratar.
 
+### Alternativa recomendada: IONOS VPS (ya hay cuenta)
+
+| Opción | Contenido | €/mes (sin IVA) |
+|---|---|---|
+| **2 × VPS XL** (8 vCores / 16 GB / 480 GB NVMe) | Uno para WorkAdventure y otro para LiveKit + Coturn | ~34 en promoción · ~56 a precio normal |
+| 1 × VPS XL (piloto) | Todo junto | ~17 en promoción · ~28 a precio normal |
+
+- **Por qué IONOS es más barato:** el **tráfico es ilimitado a 1 Gbit/s**, así que el vídeo, que es lo que más cuesta en DigitalOcean o AWS, aquí no se paga aparte. 50 alumnos × ~2 Mbps ≈ 100 Mbps, muy por debajo de 1 Gbit/s.
+- **Centro de datos en España** (también en Alemania, Reino Unido y EE. UU.): baja latencia para alumnos de España y datos en la UE (RGPD).
+- **Hay que añadir el 21 % de IVA y ~10 € de alta por VPS.** Las promociones tienen permanencia y luego suben al precio normal.
+- **Los vCores del VPS son compartidos.** LiveKit es sensible a picos de CPU: si el vídeo se entrecorta en clases grandes, el siguiente paso es un VPS mayor o un servidor dedicado.
+- **Hay que abrir los mismos puertos que en DigitalOcean** en el firewall del panel de IONOS (*Red → Políticas de firewall*).
+- **Precios de 2026 de listados de terceros y de la web de IONOS EE. UU.** Confirmadlos en ionos.es.
+
 ## 9. Grado de personalización
 
 Hay tres niveles, de menos a más esfuerzo.
