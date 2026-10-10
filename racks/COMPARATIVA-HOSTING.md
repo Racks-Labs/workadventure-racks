@@ -1,5 +1,7 @@
 # Comparativa de hosting: campus completo con Dokploy
 
+> **Decisión (2026-10-10): no se usa Dokploy.** Se despliega con el Docker Compose oficial en 2 servidores. Ver [`deploy/DESPLIEGUE.md`](./deploy/DESPLIEGUE.md). La tabla de precios sigue valiendo; la sección de Dokploy queda solo como referencia.
+
 > **Fecha:** 2026-10-10. Los precios son de la web de cada proveedor y de listados de terceros. **Hetzner ha subido precios tres veces en 2026** y las fuentes no siempre coinciden, así que confirmad cada cifra en la web oficial antes de contratar.
 > Los importes van sin IVA (21 %), salvo donde se indica.
 

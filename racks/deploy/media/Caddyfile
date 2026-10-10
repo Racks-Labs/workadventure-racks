@@ -1,0 +1,8 @@
+{
+	email {$ACME_EMAIL}
+}
+
+# wss://livekit.racks.university -> LiveKit (señalización). Los medios van por UDP directo.
+{$LIVEKIT_DOMAIN} {
+	reverse_proxy 127.0.0.1:7880
+}
