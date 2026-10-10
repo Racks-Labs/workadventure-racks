@@ -31,6 +31,8 @@ Después, el **editor integrado** (botón de construir, solo para quien tenga el
 
 ## Plano propuesto
 
+> Plano completo por distritos, basado en las aulas reales de Racks: [`PLANO.md`](./PLANO.md). La tabla de abajo es el núcleo mínimo (MVP).
+
 | Área (nombre exacto) | Para qué | Configuración en el editor de mapas |
 |---|---|---|
 | `recepcion` | Punto de entrada, carteles y enlaces | Entrada por defecto (*start*). Área "abrir web" con `https://learn.racks.university` |
