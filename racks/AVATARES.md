@@ -94,6 +94,9 @@ Esto convierte el avatar en el **escaparate del progreso** del alumno, visible p
 
 ## 5. Para diseño: especificación de una capa
 
+> Especificación completa, lista de piezas y herramientas: [`branding/BRIEF-DISENO.md`](branding/BRIEF-DISENO.md) y [`tools/README.md`](tools/README.md) (`avatar-check` y `avatar-recolor`, ya probados).
+
+
 - **Formato:** PNG RGBA de **96×128**, fondo transparente.
 - **Contenido:** solo la pieza (por ejemplo, la gorra), en la **misma posición** que la cabeza del cuerpo base, en los 12 fotogramas.
 - **Base de trabajo:** los PNG de `play/public/resources/customisation/` o `characters/pipoya/` de este repo, que ya traen la animación correcta.

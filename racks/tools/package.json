@@ -1,0 +1,14 @@
+{
+  "name": "racks-campus-tools",
+  "private": true,
+  "type": "module",
+  "description": "Herramientas del campus Racks: comprobar y recolorear avatares (Wokas) de WorkAdventure.",
+  "scripts": {
+    "avatar:check": "node avatar-check.mjs",
+    "avatar:recolor": "node avatar-recolor.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "pngjs": "7.0.0"
+  }
+}
